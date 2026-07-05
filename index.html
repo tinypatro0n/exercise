@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Strength — Today's Session</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#15171B">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Strength">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --console:#15171B;      /* deep warm charcoal */
+    --panel:#1E2126;        /* lifted panel */
+    --panel-2:#22262C;
+    --edge:#2C313A;         /* hairline */
+    --signal:#F0A836;       /* tungsten amber = live/today */
+    --signal-dim:#7a5a24;
+    --rest:#4FB3A6;         /* recovery teal */
+    --paper:#ECE7DE;        /* warm off-white */
+    --muted:#878D98;
+    --muted-2:#5C626D;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--console);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:48px;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px;}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(var(--console),var(--console) 78%,rgba(21,23,27,0));
+    padding:18px 0 10px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .lamp{width:10px;height:10px;border-radius:50%;background:var(--signal);
+    box-shadow:0 0 10px 2px rgba(240,168,54,.7);flex:none;}
+  @media (prefers-reduced-motion:no-preference){
+    .lamp{animation:pulse 2.6s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 10px 2px rgba(240,168,54,.7);}50%{opacity:.6;box-shadow:0 0 6px 1px rgba(240,168,54,.4);}}
+  }
+  .brand .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);}
+  h1{font-family:var(--mono);font-weight:600;font-size:15px;letter-spacing:.02em;
+    margin:2px 0 0;}
+
+  /* Day channel selector */
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:14px 0 4px;}
+  .day-btn{
+    font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--muted);background:var(--panel);border:1px solid var(--edge);
+    border-radius:7px;padding:10px 0 8px;cursor:pointer;text-align:center;
+    transition:color .15s,border-color .15s,background .15s;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .day-btn .dot{width:5px;height:5px;border-radius:50%;background:var(--muted-2);}
+  .day-btn:hover{color:var(--paper);border-color:var(--muted-2);}
+  .day-btn.active{color:var(--console);background:var(--signal);border-color:var(--signal);
+    box-shadow:0 0 14px rgba(240,168,54,.35);}
+  .day-btn.active .dot{background:var(--console);}
+  .day-btn.rest.active{background:var(--rest);border-color:var(--rest);box-shadow:0 0 14px rgba(79,179,166,.3);}
+  .day-btn:focus-visible{outline:2px solid var(--paper);outline-offset:2px;}
+
+  /* Now-playing banner */
+  .banner{border:1px solid var(--edge);border-radius:12px;background:var(--panel);
+    padding:16px 18px;margin:12px 0 16px;position:relative;overflow:hidden;}
+  .banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--signal);}
+  .banner.rest::before{background:var(--rest);}
+  .banner .live{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--signal);display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+  .banner.rest .live{color:var(--rest);}
+  .banner .live .lamp{width:7px;height:7px;box-shadow:0 0 8px 1px rgba(240,168,54,.7);}
+  .banner.rest .live .lamp{background:var(--rest);box-shadow:0 0 8px 1px rgba(79,179,166,.6);}
+  .banner h2{font-family:var(--mono);font-weight:600;font-size:22px;margin:0 0 2px;letter-spacing:.01em;}
+  .banner .focus{color:var(--paper);font-size:15px;font-weight:500;}
+  .banner .meta{color:var(--muted);font-family:var(--mono);font-size:12px;margin-top:8px;letter-spacing:.03em;}
+
+  /* Daily carry / movement card */
+  .move{border:1px solid var(--edge);border-radius:11px;background:var(--panel);padding:14px 15px;
+    display:flex;gap:13px;align-items:flex-start;position:relative;overflow:hidden;}
+  .move::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--muted-2);}
+  .move.ruck::before{background:var(--signal);}
+  .move.rest::before{background:var(--rest);}
+  .move-ico{font-family:var(--mono);font-size:14px;color:var(--muted);width:26px;height:26px;flex:none;
+    display:flex;align-items:center;justify-content:center;border:1px solid var(--edge);border-radius:6px;margin-top:1px;}
+  .move.ruck .move-ico{color:var(--signal);border-color:var(--signal-dim);}
+  .move.rest .move-ico{color:var(--rest);}
+  .move-label{font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:.02em;}
+  .move.ruck .move-label{color:var(--signal);}
+  .move-detail{color:var(--muted);font-size:13px;margin-top:3px;}
+
+  /* Section label */
+  .seclabel{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);margin:20px 2px 10px;display:flex;align-items:center;gap:10px;}
+  .seclabel::after{content:"";flex:1;height:1px;background:var(--edge);}
+
+  /* Warm-up (collapsible) */
+  details.warmup{border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);overflow:hidden;}
+  details.warmup summary{list-style:none;cursor:pointer;padding:13px 16px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  details.warmup summary::-webkit-details-marker{display:none;}
+  .wu-title{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);}
+  .wu-sub{font-size:12px;color:var(--muted);}
+  .chev{font-family:var(--mono);color:var(--muted);transition:transform .2s;}
+  details.warmup[open] .chev{transform:rotate(90deg);}
+  .wu-list{padding:2px 16px 14px;}
+  .wu-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid var(--edge);}
+  .wu-row:first-child{border-top:none;}
+  .wu-name{font-weight:500;font-size:14px;}
+  .wu-cue{color:var(--muted);font-size:12.5px;margin-top:1px;}
+  .wu-dose{font-family:var(--mono);font-size:13px;color:var(--signal);white-space:nowrap;font-weight:500;padding-top:1px;}
+
+  /* Exercise channel strips */
+  .strip{border:1px solid var(--edge);border-radius:11px;background:var(--panel);
+    padding:14px 15px;margin-bottom:10px;display:flex;gap:13px;align-items:flex-start;}
+  .strip.optional{border-style:dashed;}
+  .idx{font-family:var(--mono);font-size:12px;color:var(--muted-2);font-weight:600;
+    border:1px solid var(--edge);border-radius:6px;width:26px;height:26px;flex:none;
+    display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .body{flex:1;min-width:0;}
+  .row1{display:flex;justify-content:space-between;gap:12px;align-items:baseline;}
+  .ex-name{font-weight:600;font-size:16.5px;letter-spacing:.005em;}
+  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--edge);border-radius:20px;padding:2px 7px;margin-left:8px;vertical-align:middle;}
+  .dose{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--signal);white-space:nowrap;}
+  .cue{color:var(--muted);font-size:13.5px;margin:5px 0 10px;}
+  .watch{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);
+    font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+    color:var(--paper);background:var(--panel-2);border:1px solid var(--edge);
+    border-radius:7px;padding:8px 12px;text-decoration:none;transition:border-color .15s,background .15s;}
+  .watch:hover{border-color:var(--signal);background:#26292f;}
+  .watch:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+  .watch .tri{color:var(--signal);font-size:12px;}
+
+  /* Rest day panel */
+  .restpanel{border:1px solid var(--edge);border-radius:12px;background:var(--panel);
+    padding:26px 20px;text-align:center;}
+  .restpanel .big{font-family:var(--mono);font-size:20px;color:var(--rest);letter-spacing:.03em;margin-bottom:8px;}
+  .restpanel p{color:var(--muted);max-width:40ch;margin:0 auto;font-size:14px;}
+
+  /* Footer utility */
+  .util{margin-top:22px;}
+  details.util-d{border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);margin-bottom:10px;overflow:hidden;}
+  details.util-d summary{list-style:none;cursor:pointer;padding:13px 16px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper);
+    display:flex;justify-content:space-between;align-items:center;}
+  details.util-d summary::-webkit-details-marker{display:none;}
+  details.util-d[open] .chev{transform:rotate(90deg);}
+  .util-body{padding:0 16px 15px;font-size:13.5px;color:var(--muted);}
+  .util-body strong{color:var(--paper);font-weight:600;}
+  .util-body ol{margin:8px 0 0;padding-left:18px;}
+  .util-body li{margin:5px 0;}
+  .note{font-size:12px;color:var(--muted-2);text-align:center;margin-top:16px;font-family:var(--mono);letter-spacing:.02em;line-height:1.6;}
+  .fade{animation:fade .28s ease;}
+  @media (prefers-reduced-motion:reduce){.fade{animation:none;}}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="lamp" aria-hidden="true"></span>
+      <div>
+        <div class="eyebrow">Morning Strength · Console</div>
+        <h1>Open it. Do today. Don't think.</h1>
+      </div>
+    </div>
+    <nav class="days" id="days" aria-label="Choose a day"></nav>
+  </header>
+
+  <main id="stage"></main>
+
+  <section class="util">
+    <details class="util-d">
+      <summary>How to progress <span class="chev">›</span></summary>
+      <div class="util-body">
+        Start at <strong>2 sets</strong> of everything; build toward <strong>3 sets</strong> once the week feels easy (usually 3–4 weeks in). The one rule that actually builds strength: when you hit the <strong>top of the rep range with clean form on every set</strong>, make it harder — in this order: add 1–2 reps → add a little weight → move to the harder variation. Skip this and you plateau in about 6–8 weeks. Rest 45–60 seconds between sets.
+      </div>
+    </details>
+    <details class="util-d">
+      <summary>Safety <span class="chev">›</span></summary>
+      <div class="util-body">
+        Clear this with your doctor first if you have a heart condition, high blood pressure, a joint replacement, or haven't exercised in years. <strong>Soreness is fine; sharp or radiating pain is a stop signal.</strong> Drop to the easier variation any time — hands on a counter for push-ups, knees down for planks, lighter dumbbells for everything.
+      </div>
+    </details>
+    <p class="note">Demo buttons need an internet connection.<br>They open a live video search, so the demos never go out of date.</p>
+  </section>
+</div>
+
+<script>
+const YT = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+
+const warmup = [
+  {name:"Arm swings + soft bounce", cue:"Swing arms front-to-back with a light knee bounce.", dose:"30 sec"},
+  {name:"Arm circles", cue:"Forward, then backward.", dose:"10 + 10"},
+  {name:"Cat–cow", cue:"On all fours: round the spine up, then arch and lift the chest.", dose:"8 reps"},
+  {name:"Standing torso twists", cue:"Feet planted, rotate your shoulders side to side.", dose:"8 / side"},
+  {name:"Hip circles", cue:"Hands on hips, circle the pelvis.", dose:"5 / way"},
+];
+
+const plan = {
+  mon:{focus:"Push + core", time:"≈ 12 min", rest:false, ex:[
+    {n:"Dumbbell floor press", d:"2 × 8–12", c:"On your back, press dumbbells straight up; lower until upper arms touch the floor.", v:"dumbbell floor press proper form"},
+    {n:"Overhead press", d:"2 × 8–12", c:"Press dumbbells from shoulders to overhead. Ribs down — don't arch your back.", v:"dumbbell overhead press proper form"},
+    {n:"Dead bug", d:"2 × 6–8 / side", c:"On your back, lower opposite arm + leg while pressing your low back down.", v:"dead bug exercise how to"},
+  ]},
+  tue:{focus:"Pull + core", time:"≈ 12 min", rest:false, ex:[
+    {n:"Bent-over row", d:"2 × 8–12", c:"Hinge forward, flat back; pull dumbbells to your ribs, squeeze shoulder blades.", v:"dumbbell bent over row proper form"},
+    {n:"Single-arm row", d:"2 × 8–10 / side", c:"Hand and knee on a chair; row the dumbbell to your hip.", v:"single arm dumbbell row proper form"},
+    {n:"Bird dog", d:"2 × 6–8 / side", c:"On all fours, extend opposite arm + leg level — no hip twist.", v:"bird dog exercise how to"},
+    {n:"Farmer's carry", d:"2 × 30 sec", c:"Heavy dumbbell in each hand, stand tall, walk (or march in place).", v:"farmers carry exercise how to", tag:"cardio"},
+  ]},
+  wed:{focus:"Mobility + cardio (recovery)", time:"≈ 12 min", rest:false, ex:[
+    {n:"Warm-up flow, twice", d:"≈ 5 min", c:"Run the daily warm-up twice through, slow and full range.", v:"senior dynamic warm up follow along"},
+    {n:"Brisk walk or march", d:"5–8 min", c:"Outside or in place. Comfortably breathless, still able to talk.", v:"marching in place cardio low impact"},
+    {n:"Side plank", d:"2 × 8–15 sec / side", c:"On your side, lift hips to a straight line. Drop to knees if needed.", v:"side plank proper form mcgill"},
+    {n:"Lymphatic / qigong flow", d:"2 min", c:"Arm swings, light bounces, gentle twists — easy circulation work.", v:"qigong lymphatic morning routine gentle", tag:"optional", opt:true},
+  ]},
+  thu:{focus:"Mobility · undo the ruck", time:"≈ 14 min", rest:false, ex:[
+    {n:"World's greatest stretch", d:"5 / side", c:"Lunge, hand inside front foot, rotate top arm to the ceiling. Opens hips, hamstrings, and mid-back in one move.", v:"world's greatest stretch how to"},
+    {n:"Half-kneeling hip-flexor stretch", d:"30–45 sec / side", c:"Back knee down, squeeze that glute and tuck your pelvis under — don't arch. Undoes carrying-and-sitting tightness.", v:"half kneeling hip flexor stretch posterior pelvic tilt"},
+    {n:"90/90 hip switches", d:"8 / side", c:"Seated, both knees at 90°, rotate them side to side under control. Frees up hip rotation.", v:"90 90 hip switch mobility drill"},
+    {n:"Open-book thoracic rotation", d:"6 / side", c:"On your side, knees bent, open the top arm across your body and follow it with your eyes. Counters pack-hunch posture.", v:"open book thoracic rotation stretch"},
+    {n:"Knee-to-wall ankle rock", d:"8 / side", c:"Foot a few inches from a wall, drive the knee toward it keeping the heel down. Restores the dorsiflexion loaded walking needs.", v:"knee to wall ankle mobility drill"},
+    {n:"Deep squat hold", d:"30–45 sec", c:"Sink into your deepest squat, heels down, elbows gently pressing knees out. Hold a rail if your heels lift.", v:"deep squat hold mobility how to"},
+    {n:"Standing hamstring + calf stretch", d:"30 sec each", c:"Hinge to a straight-leg hamstring stretch, then press a heel back into a calf stretch. Both take constant load when you ruck.", v:"standing hamstring and calf stretch"},
+  ]},
+  fri:{focus:"Upper + core + cardio", time:"≈ 13 min", rest:false, ex:[
+    {n:"Overhead press", d:"2 × 8–12", c:"Press dumbbells from shoulders to overhead. Ribs down.", v:"dumbbell overhead press proper form"},
+    {n:"Bent-over row", d:"2 × 8–12", c:"Hinge forward, flat back; pull dumbbells to your ribs.", v:"dumbbell bent over row proper form"},
+    {n:"Plank", d:"2 × 15–30 sec", c:"Forearms and toes, straight line, brace. Knees down if needed.", v:"forearm plank proper form"},
+    {n:"Cardio finisher", d:"60 sec", c:"Fast marching, step-ups, or jumping jacks.", v:"beginner cardio finisher at home marching", tag:"cardio"},
+  ]},
+  sat:{focus:"Optional light", time:"≈ 10 min", rest:false, ex:[
+    {n:"Warm-up flow", d:"≈ 3 min", c:"Just the daily warm-up, easy and unhurried.", v:"senior dynamic warm up follow along", opt:true, tag:"optional"},
+    {n:"Walk", d:"10 min", c:"Optional. A relaxed walk fully counts as today's movement.", v:"", opt:true, tag:"optional"},
+  ]},
+  sun:{focus:"Rest", time:"", rest:true, ex:[]},
+};
+
+const moves = {
+  mon:{type:"ruck", label:"Ruck · 44 lb · 30–45 min", detail:"Legs are fresh after Sunday. This is today's cardio — skip a finisher."},
+  tue:{type:"walk", label:"Walk · easy · 20–30 min", detail:"Recovery pace. Doubles as active recovery for your legs."},
+  wed:{type:"walk", label:"Walk · easy · 20–30 min", detail:"Keep it gentle — tomorrow is leg day."},
+  thu:{type:"walk", label:"Walk · easy · 20–30 min", detail:"Recovery pace. Pairs with today's mobility — keep it gentle."},
+  fri:{type:"walk", label:"Walk · easy · 20–30 min", detail:"Save the legs — tomorrow is your long ruck."},
+  sat:{type:"ruck", label:"Ruck · 44 lb · your longer one", detail:"Same load, more time or distance. Your longest ruck of the week."},
+  sun:{type:"rest", label:"Rest", detail:"Optional gentle stroll, nothing loaded."},
+};
+
+const order = ["mon","tue","wed","thu","fri","sat","sun"];
+const labels = {mon:"MON",tue:"TUE",wed:"WED",thu:"THU",fri:"FRI",sat:"SAT",sun:"SUN"};
+const full   = {mon:"Monday",tue:"Tuesday",wed:"Wednesday",thu:"Thursday",fri:"Friday",sat:"Saturday",sun:"Sunday"};
+
+// JS getDay(): 0=Sun ... 6=Sat
+const jsDayToKey = ["sun","mon","tue","wed","thu","fri","sat"];
+let current = jsDayToKey[new Date().getDay()];
+
+const daysNav = document.getElementById("days");
+order.forEach(k=>{
+  const b=document.createElement("button");
+  b.className="day-btn"+(plan[k].rest?" rest":"");
+  b.dataset.key=k;
+  b.innerHTML=`<span class="dot" aria-hidden="true"></span>${labels[k]}`;
+  b.setAttribute("aria-label", full[k]+(plan[k].rest?" — rest day":" — "+plan[k].focus));
+  b.addEventListener("click",()=>select(k));
+  daysNav.appendChild(b);
+});
+
+function warmupBlock(){
+  const rows = warmup.map(w=>`
+    <div class="wu-row">
+      <div><div class="wu-name">${w.name}</div><div class="wu-cue">${w.cue}</div></div>
+      <div class="wu-dose">${w.dose}</div>
+    </div>`).join("");
+  return `
+  <div class="seclabel">Warm-up · every day</div>
+  <details class="warmup" open>
+    <summary>
+      <span class="wu-title">Warm-up · ≈ 2 min</span>
+      <span style="display:flex;align-items:center;gap:10px;">
+        <span class="wu-sub">same every day</span><span class="chev">›</span>
+      </span>
+    </summary>
+    <div class="wu-list">${rows}</div>
+  </details>`;
+}
+
+function stripBlock(ex,i){
+  const tag = ex.tag ? `<span class="tag">${ex.tag}</span>` : "";
+  const watch = ex.v
+    ? `<a class="watch" href="${YT(ex.v)}" target="_blank" rel="noopener"><span class="tri" aria-hidden="true">▶</span> Watch demo</a>`
+    : "";
+  return `
+  <div class="strip${ex.opt?" optional":""}">
+    <div class="idx">${i}</div>
+    <div class="body">
+      <div class="row1">
+        <div class="ex-name">${ex.n}${tag}</div>
+        <div class="dose">${ex.d}</div>
+      </div>
+      <div class="cue">${ex.c}</div>
+      ${watch}
+    </div>
+  </div>`;
+}
+
+function moveBlock(k){
+  const m=moves[k]; if(!m) return "";
+  const cls = m.type==="ruck" ? "ruck" : (m.type==="rest" ? "rest" : "walk");
+  const glyph = m.type==="ruck" ? "▲" : (m.type==="rest" ? "○" : "→");
+  return `
+  <div class="seclabel">Today's carry</div>
+  <div class="move ${cls}">
+    <div class="move-ico" aria-hidden="true">${glyph}</div>
+    <div>
+      <div class="move-label">${m.label}</div>
+      <div class="move-detail">${m.detail}</div>
+    </div>
+  </div>`;
+}
+
+function select(k){
+  current=k;
+  document.querySelectorAll(".day-btn").forEach(b=>{
+    const on=b.dataset.key===k;
+    b.classList.toggle("active",on);
+    if(on) b.setAttribute("aria-current","true"); else b.removeAttribute("aria-current");
+  });
+  const d=plan[k];
+  const stage=document.getElementById("stage");
+  let html="";
+
+  if(d.rest){
+    html = `
+    <div class="banner rest">
+      <div class="live"><span class="lamp" aria-hidden="true"></span>Today · ${full[k]}</div>
+      <h2>Rest day</h2>
+      <div class="focus">Nothing scheduled.</div>
+    </div>
+    <div class="restpanel">
+      <div class="big">Recovery is the work.</div>
+      <p>Strength is built while you rest, not while you lift. Take the day. If you want to move, a gentle walk is plenty.</p>
+    </div>
+    ${moveBlock(k)}`;
+  } else {
+    const strips = d.ex.map((e,i)=>stripBlock(e,i+1)).join("");
+    html = `
+    <div class="banner">
+      <div class="live"><span class="lamp" aria-hidden="true"></span>Today · ${full[k]}</div>
+      <h2>${d.focus}</h2>
+      <div class="meta">${d.time} &nbsp;·&nbsp; ${d.ex.length} moves &nbsp;·&nbsp; 2 sets each, 45–60 sec rest</div>
+    </div>
+    ${moveBlock(k)}
+    ${warmupBlock()}
+    <div class="seclabel">The session</div>
+    ${strips}`;
+  }
+  stage.innerHTML=`<div class="fade">${html}</div>`;
+}
+
+select(current);
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
