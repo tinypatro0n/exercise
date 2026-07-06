@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7a4419">
+<title>SRCCON 2026 — Field Plan</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e0ddd6;
+    --accent: #7a4419;
+    --band: #f4f1ea;
+    --target: #b45309;
+    --skip: #9a9a9a;
+  }
+  * { box-sizing: border-box; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    margin: 0;
+    padding: 16px 14px 40px;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.4;
+    font-size: 16px;
+    background: #fff;
+  }
+  header { border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 8px; }
+  h1 { font-size: 20px; margin: 0 0 2px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .twoliner {
+    background: var(--band);
+    border-left: 3px solid var(--accent);
+    padding: 8px 10px;
+    font-size: 13px;
+    margin: 12px 0;
+    border-radius: 2px;
+  }
+  .twoliner strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 3px; }
+  h2 {
+    font-size: 15px;
+    margin: 22px 0 4px;
+    padding: 5px 8px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    letter-spacing: 0.01em;
+  }
+  .slot { border-bottom: 1px solid var(--line); padding: 9px 0; }
+  .time { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
+  .title { font-size: 15px; font-weight: 600; margin: 1px 0; }
+  .room { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .note { font-size: 13px; color: #3a3a3a; margin-top: 3px; }
+  .target {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--target);
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .work { border-left: 3px solid var(--target); padding-left: 8px; background: #fdf6ee; }
+  .skip { font-size: 12px; color: var(--skip); margin-top: 3px; font-style: italic; }
+  .tbd { color: var(--muted); font-style: italic; }
+  .triage {
+    background: #2a2a2a; color: #fff; padding: 12px 12px; border-radius: 4px; margin: 20px 0 8px;
+    font-size: 13px;
+  }
+  .triage strong { color: #ffb86b; }
+  .prep { background: var(--band); padding: 10px 12px; border-radius: 4px; font-size: 13px; margin-bottom: 4px; }
+  .prep h2 { background: none; color: var(--accent); padding: 0; margin: 0 0 4px; font-size: 14px; }
+  ol.people { margin: 4px 0 0; padding-left: 20px; font-size: 13px; }
+  ol.people li { margin-bottom: 3px; }
+  .foot { font-size: 11px; color: var(--muted); margin-top: 24px; border-top: 1px solid var(--line); padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SRCCON 2026 — Field Plan</h1>
+  <div class="sub">July 8–9 · McNamara Alumni Center, Minneapolis · The Civic Tech Show pre-production</div>
+</header>
+
+<div class="twoliner">
+  <strong>Say this aloud, on cue</strong>
+  A show about the people who build, maintain, and use civic technology — the modest, community-held tools that help residents get a handle on local power, usually a little behind the cutting edge.
+</div>
+
+<div class="prep">
+  <h2>Before you fly</h2>
+  Rehearse the two-liner out loud. Send short advance notes to <strong>Nina Ignaczak</strong> and <strong>Dan Schultz</strong> — a pre-note turns a post-session scrum into a scheduled coffee.
+</div>
+
+<h2>WEDNESDAY, JULY 8</h2>
+
+<div class="slot work">
+  <div class="time">8:00–9:00 · WORKING</div>
+  <div class="title">Registration + Coffee <span class="room">· Memorial</span></div>
+  <div class="note">Early arrivals = easiest conversations of the whole event. Test the two-liner on strangers before it matters.</div>
+</div>
+
+<div class="slot">
+  <div class="time">9:00</div>
+  <div class="title">Welcome <span class="room">· Memorial</span></div>
+</div>
+
+<div class="slot">
+  <div class="time">10:00–11:15</div>
+  <div class="title">Think like an engineer: building tools without code <span class="room">· Johnson</span></div>
+  <div class="note">Ignaczak + Haseman. Join the build exercise — bring a real problem from your own work.</div>
+  <span class="target">Target: Ignaczak — pre-interview</span>
+  <div class="skip">Skipping: Civic journalism / organizing (Thomas Swain) — catch Lager &amp; Dooling at lunch.</div>
+</div>
+
+<div class="slot work">
+  <div class="time">11:15–11:45 · WORKING</div>
+  <div class="title">Break</div>
+  <div class="note">Ignaczak follow-up, or grab Klaudia Jaźwińska (her session just let out in Ski-U-Mah).</div>
+</div>
+
+<div class="slot">
+  <div class="time">11:45–1:00</div>
+  <div class="title">People don't care about "local government." They care about their street. <span class="room">· Johnson</span></div>
+  <div class="note">McGuire + Olson, Moab Sun News. Same room, no transit. Assess as an episode case — ask what residents actually <em>use</em> vs. what they built.</div>
+  <span class="target">Target: McGuire / Olson — episode case</span>
+</div>
+
+<div class="slot work">
+  <div class="time">1:00–2:30 · WORKING LUNCH</div>
+  <div class="title">Lunch</div>
+  <div class="note">Priority seat: Lager / Dooling, or continue with the Moab pair. One table, one target — don't graze.</div>
+</div>
+
+<div class="slot">
+  <div class="time">2:30–3:45</div>
+  <div class="title">Community Journalism: lessons from your local farmers market <span class="room">· Thomas Swain</span></div>
+  <div class="note">Saadeh. Test whether her resilience framework sharpens your "what conditions let modest civic tech survive" question. If it drifts academic early, switch to Analytics 101 (Johnson) — Brian Boyer worth knowing.</div>
+</div>
+
+<div class="slot work">
+  <div class="time">3:45–4:15 · WORKING</div>
+  <div class="title">Break</div>
+</div>
+
+<div class="slot">
+  <div class="time">4:15–5:30</div>
+  <div class="title">Zines at SRCCON! <span class="room">· Memorial (all-attendee)</span></div>
+  <div class="note">Soft entry to the zine-makers (Bennett/Kurnick) a day before their Thursday session you'll miss. Solves the Thursday conflict in advance.</div>
+</div>
+
+<div class="slot work">
+  <div class="time">5:30 · WORKING DINNER</div>
+  <div class="title">Dinner <span class="room">· Memorial</span></div>
+  <div class="note">Find Eric Ulken &amp; Kim Bui (JSK) tonight — pressure-test the concept over food, not in a 40-person room tomorrow.</div>
+  <span class="target">Target: Ulken / Bui — concept test</span>
+</div>
+
+<div class="slot">
+  <div class="time">7:00–8:50</div>
+  <div class="title tbd">Evening sessions — still unannounced as of July 5; re-check on site</div>
+  <div class="note">Four slots exist, one marked "7pm meet to leave" (likely an offsite outing). If nothing lands, this is the highest-density networking block. Don't skip to rest — skip the morning instead (Thursday starts late by design).</div>
+</div>
+
+<h2>THURSDAY, JULY 9</h2>
+
+<div class="slot">
+  <div class="time">9:30–10:45</div>
+  <div class="title">Can local news work as a consumer product? <span class="room">· Johnson</span></div>
+  <div class="note">Ulken + Bui. Say the two-liner in the discussion; watch how a sharp product-minded room reacts. Their reaction <em>is</em> the pressure-test.</div>
+  <span class="target">Target: concept test (live)</span>
+</div>
+
+<div class="slot work">
+  <div class="time">10:45–11:15 · WORKING</div>
+  <div class="title">Break</div>
+  <div class="note">Follow up with whoever bit.</div>
+</div>
+
+<div class="slot">
+  <div class="time">11:15–12:30</div>
+  <div class="title">Designing tools journalists actually use <span class="room">· Thomas Swain</span></div>
+  <div class="note">Williams. Hunt outside voices — listen for anyone articulate about <em>why</em> newsroom-built tools fail. That skepticism is your counterweight voice.</div>
+  <span class="target">Target: outside / counterweight voices</span>
+  <div class="skip">Skipping: Media co-op (Johnson) — email Morrissette after; better as a lead than a live session.</div>
+</div>
+
+<div class="slot work">
+  <div class="time">12:30–2:00 · WORKING LUNCH</div>
+  <div class="title">Lunch</div>
+  <div class="note">Target: Joe Germuska before his afternoon session. Second: Morrissette (local — easy follow-up later).</div>
+</div>
+
+<div class="slot">
+  <div class="time">2:00–3:15</div>
+  <div class="title">Community skunk works (AI beyond capitalism) <span class="room">· Heritage</span></div>
+  <div class="note">Schultz. Your single most on-thesis session. Participate fully — the guidelines the room drafts are raw material for the chatbot episode.</div>
+  <span class="target">Target: Schultz — guest + counterweight</span>
+</div>
+
+<div class="slot work">
+  <div class="time">3:15–3:45 · WORKING</div>
+  <div class="title">Break</div>
+  <div class="note">Schultz follow-up. Protect this above all others — if it's going well, sacrifice the first 15 min of the next session.</div>
+</div>
+
+<div class="slot">
+  <div class="time">3:45–5:00</div>
+  <div class="title">Putting the Open back in Source <span class="room">· Ski-U-Mah</span></div>
+  <div class="note">Ruzicka + Germuska. Germuska as expert-context for the historical anchors — ask what civic/news tech he's watched get built, abandoned, rebuilt.</div>
+  <span class="target">Target: Germuska — historical expert voice</span>
+</div>
+
+<div class="slot">
+  <div class="time">5:00</div>
+  <div class="title">Closing <span class="room">· Memorial</span></div>
+  <div class="note">Last pass for anyone unmet. Capture all contacts somewhere you'll actually process — warm leads die within 48 hours.</div>
+</div>
+
+<div class="triage">
+  <strong>If you have to triage:</strong> ~6 breaks/meals, 7 priority people — every unassigned break is a lost slot. Protect episode value over pressure-testers, in this order: <strong>Schultz → Ignaczak → McGuire/Olson → Germuska</strong>.
+</div>
+
+<div class="prep">
+  <h2>Reach-out shortlist</h2>
+  <ol class="people">
+    <li><strong>Nina Ignaczak</strong> — guest, "thinking like an engineer"; self-taught builder</li>
+    <li><strong>Dan Schultz</strong> — guest + counterweight on chatbot episode</li>
+    <li><strong>Maggie McGuire / Michael Olson</strong> — episode case, or public-meetings voices</li>
+    <li><strong>Joe Germuska</strong> — expert context for historical anchors</li>
+    <li><strong>Klaudia Jaźwińska</strong> — critical counterweight, anything AI-adjacent</li>
+    <li><strong>Kim Bui / Eric Ulken</strong> — concept testers (JSK trust already there)</li>
+    <li><strong>Sarah Bennett / Chelsea Kurnick</strong> — local-info-distribution leads</li>
+  </ol>
+</div>
+
+<div class="triage">
+  <strong>The insider-drift warning:</strong> everyone here is a journalist — none is a resident user (those still come from home). And this crowd is your drift risk in the flesh. Right launchpad; wrong ceiling. Don't let the pilot guest list end up populated entirely from this room.
+</div>
+
+<div class="foot">
+  Source: OpenNews, SRCCON 2026 published schedule data (re-checked July 5, 2026). Times/rooms confirmed; Wednesday-evening sessions still unannounced — re-check on site.
+</div>
+
+</body>
+</html>
