@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17181b">
+<title>Show Todo — Develop &amp; Prove</title>
+<style>
+  :root {
+    --bg: #17181b;
+    --panel: #1e2024;
+    --panel-2: #232529;
+    --ink: #e9e6de;
+    --muted: #8f8d96;
+    --faint: #5c5b63;
+    --amber: #e8a33d;
+    --amber-dim: #7a5a28;
+    --line: #2c2e33;
+    --done: #62606a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0 auto;
+    max-width: 620px;
+    padding: 18px 14px 60px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+
+  header { margin-bottom: 6px; }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  h1 { font-size: 20px; margin: 2px 0 0; font-weight: 700; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+  /* Signature: system-status progress readout */
+  .status {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px 12px 10px;
+    margin: 14px 0 20px;
+  }
+  .status .bar {
+    font-size: 15px;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .status .bar .empty { color: var(--faint); }
+  .status .readout {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .status .readout strong { color: var(--ink); font-weight: 600; }
+
+  section { margin-bottom: 4px; }
+  .month-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--line);
+    color: inherit;
+    text-align: left;
+    padding: 12px 2px 10px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .month-head:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 4px; }
+  .month-label {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    display: block;
+  }
+  .month-title { font-size: 15px; font-weight: 650; }
+  .month-count {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .month-count.complete { color: var(--amber); }
+  .collapsed .tasks { display: none; }
+
+  ul.tasks { list-style: none; margin: 0 0 14px; padding: 0; }
+  .task {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 11px 12px;
+    margin-bottom: 6px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+  }
+  .task:active { background: var(--panel-2); }
+  .task:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .box {
+    flex: 0 0 auto;
+    width: 20px; height: 20px;
+    margin-top: 1px;
+    border: 1.5px solid var(--muted);
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 14px;
+    color: transparent;
+  }
+  .task .text { flex: 1; }
+  .task .label { font-size: 15px; font-weight: 500; }
+  .task .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .task.done { border-color: transparent; background: transparent; }
+  .task.done .box { border-color: var(--amber-dim); color: var(--amber); }
+  .task.done .label { color: var(--done); text-decoration: line-through; text-decoration-color: var(--faint); }
+  .task.done .note { color: var(--faint); }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    padding-top: 10px;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .foot button {
+    background: none; border: none; color: var(--faint);
+    font: inherit; text-decoration: underline; cursor: pointer; padding: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .task { transition: background 120ms ease, border-color 120ms ease; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Develop &amp; Prove · 6-Month Plan</span>
+  <h1>The Civic Tech Show — Todo</h1>
+  <div class="sub">~1 weekend day/week · the Month 6 go/no-go is the deliverable</div>
+</header>
+
+<div class="status" id="status" aria-live="polite">
+  <div class="bar" id="bar"></div>
+  <div class="readout">
+    <span id="count"></span>
+    <span>NEXT: <strong id="next"></strong></span>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<div class="foot">
+  Source: Caswell_CivicTech_6Month_Plan (July 2026). Progress is saved on this device.
+  <button id="reset" type="button">Reset all progress</button>
+</div>
+
+<script>
+const MONTHS = [
+  { id:"m1", label:"Month 1", title:"Lock the concept and the format", tasks:[
+    { id:"m0-own",   t:"Confirm ownership / outside-work with Signal", n:"Settled — supervisor confirmed, precedent exists", d:true },
+    { id:"m1-desc",  t:"Settle the season-one description", n:"Settled July 2026 — season-scoped canonical version", d:true },
+    { id:"m1-two",   t:"Write the spoken two-liner", n:"Settled — rehearse before SRCCON", d:true },
+    { id:"m1-fmt",   t:"Lock the episode template", n:"2–3 voices incl. resident user · disclosure rule · 25–40 min · light video", d:true },
+    { id:"m1-gear",  t:"Confirm the cheap production setup", n:"Gear you already own — no purchases" },
+    { id:"m1-prompt",t:"Write the recurring episode-end prompt", n:"One specific question, every episode → season-closing mailbag" },
+    { id:"m1-short", t:"Turn the episode territory into a working shortlist", n:"From the tentative case list" },
+    { id:"m1-pilots",t:"Pick the two pilot topics", n:"One historical (FreeNet + your mother is the strong candidate) + one present-day/embedded" },
+    { id:"m1-title", t:"Decide the working title", n:"Not in the plan doc, but it gates Month 3 publishing setup · shortlist exists · collision-check required" }
+  ]},
+  { id:"m2", label:"Month 2", title:"Research and book the pilots", tasks:[
+    { id:"m2-p1v",  t:"Map pilot 1's voices", n:"Builder/expert + resident user + outside voice if you're in the story" },
+    { id:"m2-p1o",  t:"Reach out to pilot 1's first guest; begin research" },
+    { id:"m2-p1p",  t:"Pre-interview pilot 1's voices; build the outline", n:"Unrecorded — test the angle" },
+    { id:"m2-p2",   t:"Map and pre-interview pilot 2's voices", n:"If embedded: line up the outside, non-Signal voice the disclosure rule requires" },
+    { id:"m2-src",  t:"Work SRCCON (July 8–9)", n:"Scout outside voices · find guests · test the two-liner · process contacts within 48 hrs" },
+    { id:"m2-out",  t:"Finalize both outlines, questions, resident segments, and the prompt" },
+    { id:"m2-date", t:"Confirm recording dates for both pilots" }
+  ]},
+  { id:"m3", label:"Month 3", title:"Record and edit pilot 1", tasks:[
+    { id:"m3-rec",  t:"Record pilot 1's conversations" },
+    { id:"m3-e1",   t:"First edit pass" },
+    { id:"m3-e2",   t:"Finish the edit", n:"Resident-user voice in · closing prompt in · light video" },
+    { id:"m3-clip", t:"Cut 2–3 vertical clips" },
+    { id:"m3-home", t:"Set up where the show lives", n:"Hosting feed + a simple landing/link hub — needs the title decided" }
+  ]},
+  { id:"m4", label:"Month 4", title:"Publish pilot 1, record pilot 2", tasks:[
+    { id:"m4-pub",  t:"Publish pilot 1", n:"Share to the civic-tech community first — your most responsive early audience" },
+    { id:"m4-rec",  t:"Record pilot 2" },
+    { id:"m4-edit", t:"Edit pilot 2" },
+    { id:"m4-clip", t:"Finish pilot 2 and its clips" },
+    { id:"m4-sig",  t:"Note pilot 1's early signal", n:"Did the right people respond and share — not just download counts" }
+  ]},
+  { id:"m5", label:"Month 5", title:"Publish pilot 2, gather honest signal", tasks:[
+    { id:"m5-pub",  t:"Publish pilot 2 and clips; deploy the prompt for real", n:"Start collecting responses" },
+    { id:"m5-share",t:"Share widely; ask trusted people for candid reactions", n:"JSK, Documenters networks, civic-tech circles" },
+    { id:"m5-rev",  t:"Review the signals that matter", n:"Sustainable at this pace? Good and distinctive to informed people? Shared unprompted? Prompt responses?" },
+    { id:"m5-write",t:"Write down what you learned", n:"Including what didn't work" }
+  ]},
+  { id:"m6", label:"Month 6", title:"The honest go/no-go decision", tasks:[
+    { id:"m6-ass",  t:"Assess the two questions", n:"(1) Sustainable at your pace? (2) Good and wanted — did the right audience respond?" },
+    { id:"m6-dec",  t:"Decide the path", n:"Go: continue self-funded, begin audience-building. No: name what would have to change" },
+    { id:"m6-sk",   t:"If go: sketch the rest of season one", n:"From the case list, at a sustainable pace" },
+    { id:"m6-bank", t:"Bank the pilots, the learnings, and the decision" }
+  ]}
+];
+
+const KEY = "ctshow-todo-v1";
+const CKEY = "ctshow-collapse-v1";
+
+function loadState(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
+function saveState(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+function loadCollapse(){ try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch(e){ return {}; } }
+function saveCollapse(c){ try { localStorage.setItem(CKEY, JSON.stringify(c)); } catch(e){} }
+
+let state = loadState();
+let collapse = loadCollapse();
+
+function isDone(task){
+  if (task.id in state) return !!state[task.id];
+  return !!task.d; // settled-by-default items
+}
+
+function render(){
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  let total = 0, done = 0, nextTask = null;
+
+  MONTHS.forEach(m => {
+    const mDone = m.tasks.filter(isDone).length;
+    total += m.tasks.length; done += mDone;
+    if (!nextTask) nextTask = m.tasks.find(t => !isDone(t));
+
+    const sec = document.createElement("section");
+    if (collapse[m.id]) sec.classList.add("collapsed");
+
+    const head = document.createElement("button");
+    head.className = "month-head";
+    head.setAttribute("aria-expanded", String(!collapse[m.id]));
+    head.innerHTML =
+      '<span><span class="month-label">' + m.label + '</span>' +
+      '<span class="month-title">' + m.title + '</span></span>' +
+      '<span class="month-count' + (mDone === m.tasks.length ? ' complete' : '') + '">' +
+      mDone + '/' + m.tasks.length + '</span>';
+    head.addEventListener("click", () => {
+      collapse[m.id] = !collapse[m.id];
+      saveCollapse(collapse);
+      render();
+    });
+    sec.appendChild(head);
+
+    const ul = document.createElement("ul");
+    ul.className = "tasks";
+    m.tasks.forEach(t => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      const doneNow = isDone(t);
+      btn.className = "task" + (doneNow ? " done" : "");
+      btn.setAttribute("aria-pressed", String(doneNow));
+      btn.innerHTML =
+        '<span class="box" aria-hidden="true">✓</span>' +
+        '<span class="text"><span class="label">' + t.t + '</span>' +
+        (t.n ? '<span class="note">' + t.n + '</span>' : '') + '</span>';
+      btn.addEventListener("click", () => {
+        state[t.id] = !doneNow;
+        saveState(state);
+        render();
+      });
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    app.appendChild(sec);
+  });
+
+  // status readout
+  const SEG = 22;
+  const filled = Math.round((done / total) * SEG);
+  document.getElementById("bar").innerHTML =
+    "[" + "█".repeat(filled) + '<span class="empty">' + "░".repeat(SEG - filled) + "</span>] " +
+    Math.round((done / total) * 100) + "%";
+  document.getElementById("count").innerHTML = "<strong>" + done + "</strong>/" + total + " done";
+  document.getElementById("next").textContent = nextTask ? nextTask.t : "Go/no-go complete";
+}
+
+document.getElementById("reset").addEventListener("click", () => {
+  if (confirm("Clear all progress on this device? Settled items will re-check themselves.")) {
+    state = {};
+    saveState(state);
+    render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
